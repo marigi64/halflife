@@ -2858,7 +2858,8 @@ void PM_CheckParamters( void )
 	// as otherwise it affects every integration step incorrectly.
 	if ( ( pmove->onground != -1 ) && ( pmove->cmd.buttons & IN_USE) )
 	{
-		pmove->maxspeed *= 1.0f / 3.0f;
+		//pmove->maxspeed *= 1.0f / 3.0f;
+		VectorScale(pmove->velocity, 0.3, pmove->velocity);
 	}
 #endif
 
