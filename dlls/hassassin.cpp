@@ -103,6 +103,8 @@ public:
 	int		m_iFrustration;
 
 	int		m_iShell;
+
+	float	m_flNextStepTime;
 };
 LINK_ENTITY_TO_CLASS( monster_human_assassin, CHAssassin );
 
@@ -740,9 +742,21 @@ void CHAssassin :: RunAI( void )
 
 	if (m_Activity == ACT_RUN || m_Activity == ACT_WALK)
 	{
-		static int iStep = 0;
-		iStep = ! iStep;
-		if (iStep)
+		bool bPlayStep = false;
+
+		if (m_Activity == ACT_RUN)
+		{
+			static int iStep = 0;
+			iStep = !iStep;
+			bPlayStep = iStep;
+		}
+		else if (gpGlobals->time >= m_flNextStepTime)
+		{
+			m_flNextStepTime = gpGlobals->time + 0.585f;
+			bPlayStep = true;
+		}
+
+		if (bPlayStep)
 		{
 			switch( RANDOM_LONG( 0, 3 ) )
 			{
@@ -753,6 +767,8 @@ void CHAssassin :: RunAI( void )
 			}
 		}
 	}
+	else
+		m_flNextStepTime = 0;
 }
 
 
