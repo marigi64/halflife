@@ -350,31 +350,28 @@ void CSatchel::Holster( int skiplocal /* = 0 */ )
 
 void CSatchel::PrimaryAttack()
 {
-	// we're reloading, don't allow fire
-	if( m_chargeReady != 2 )
+	switch (m_chargeReady)
+	{
+	case 0:
 	{
 		Throw();
 	}
-}
-
-
-void CSatchel::SecondaryAttack( void )
-{
-	if ( m_chargeReady == 1 )
+	break;
+	case 1:
 	{
-		SendWeaponAnim( SATCHEL_RADIO_FIRE );
+		SendWeaponAnim(SATCHEL_RADIO_FIRE);
 
-		edict_t *pPlayer = m_pPlayer->edict( );
+		edict_t* pPlayer = m_pPlayer->edict();
 
-		CBaseEntity *pSatchel = NULL;
+		CBaseEntity* pSatchel = NULL;
 
-		while ((pSatchel = UTIL_FindEntityInSphere( pSatchel, m_pPlayer->pev->origin, 4096 )) != NULL)
+		while ((pSatchel = UTIL_FindEntityInSphere(pSatchel, m_pPlayer->pev->origin, 4096)) != NULL)
 		{
-			if (FClassnameIs( pSatchel->pev, "monster_satchel"))
+			if (FClassnameIs(pSatchel->pev, "monster_satchel"))
 			{
 				if (pSatchel->pev->owner == pPlayer)
 				{
-					pSatchel->Use( m_pPlayer, m_pPlayer, USE_ON, 0 );
+					pSatchel->Use(m_pPlayer, m_pPlayer, USE_ON, 0);
 					m_chargeReady = 2;
 				}
 			}
@@ -384,6 +381,23 @@ void CSatchel::SecondaryAttack( void )
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
 		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5;
+		break;
+	}
+
+	case 2:
+		// we're reloading, don't allow fire
+	{
+	}
+	break;
+	}
+}
+
+
+void CSatchel::SecondaryAttack( void )
+{
+	if (m_chargeReady != 2)
+	{
+		Throw();
 	}
 }
 
